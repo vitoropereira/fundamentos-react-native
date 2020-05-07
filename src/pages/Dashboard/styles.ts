@@ -1,6 +1,13 @@
 import styled from 'styled-components/native';
 import { FlatList } from 'react-native';
 
+interface ItemProps {
+  id: string;
+  title: string;
+  image_url: string;
+  price: number;
+}
+
 export const Container = styled.SafeAreaView`
   flex: 1;
   align-items: center;
@@ -13,12 +20,13 @@ export const ProductContainer = styled.View`
   flex-direction: row;
 `;
 
-export const ProductList = styled(FlatList).attrs({
+export const ProductList = (styled(FlatList).attrs({
   numColumns: 2,
 })`
   flex: 1;
   padding: 0 10px;
-`;
+` as React.ComponentType) as new <ItemProps>() => FlatList<ItemProps>;
+// Depois veja que você terá que exportar seu ProductList  da forma listada acima.
 
 export const Product = styled.View`
   background: #fff;
