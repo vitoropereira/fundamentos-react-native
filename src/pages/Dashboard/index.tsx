@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import FeatherIcon from 'react-native-vector-icons/Feather';
 
-import { View, Image } from 'react-native';
+import { View, Image, ViewPropertiesAndroid } from 'react-native';
 
 import formatValue from '../../utils/formatValue';
 import { useCart } from '../../hooks/cart';
@@ -36,13 +36,17 @@ const Dashboard: React.FC = () => {
   useEffect(() => {
     async function loadProducts(): Promise<void> {
       // TODO
-    }
+      await api.get<Product[]>('products').then(response => {
 
+        setProducts(response.data)
+      }).catch(error => console.log(error));
+    }
     loadProducts();
   }, []);
 
   function handleAddToCart(item: Product): void {
     // TODO
+
   }
 
   return (
@@ -55,21 +59,16 @@ const Dashboard: React.FC = () => {
           ListFooterComponentStyle={{
             height: 80,
           }}
-          renderItem={({ item }) => (
-            <Product>
-              <ProductImage source={{ uri: item.image_url }} />
-              <ProductTitle>{item.title}</ProductTitle>
-              <PriceContainer>
-                <ProductPrice>{formatValue(item.price)}</ProductPrice>
-                <ProductButton
-                  testID={`add-to-cart-${item.id}`}
-                  onPress={() => handleAddToCart(item)}
-                >
-                  <FeatherIcon size={20} name="plus" color="#C4C4C4" />
-                </ProductButton>
-              </PriceContainer>
-            </Product>
-          )}
+          renderItem={({ item: product }) => (<Product>
+            <ProductImage source={{ uri: product.image_url }} />
+            <ProductTitle>{product.title}</ProductTitle>
+            <PriceContainer>
+              <ProductPrice>{formatValue(product.price)}</ProductPrice>
+              <ProductButton testID={`add-to-cart-${product.id}`} onPress={() => handleAddToCart(product)}>
+                <FeatherIcon size={20} name="plus" color="#C4C4C4" />
+              </ProductButton>
+            </PriceContainer>
+          </Product>)}
         />
       </ProductContainer>
       <FloatingCart />
