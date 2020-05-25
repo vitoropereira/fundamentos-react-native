@@ -32,7 +32,7 @@ interface Product {
   title: string;
   image_url: string;
   price: number;
-  quantity: number;
+  quantity?: number;
 }
 
 const Cart: React.FC = () => {
@@ -40,22 +40,40 @@ const Cart: React.FC = () => {
 
   function handleIncrement(id: string): void {
     // TODO
+    increment(id)
   }
 
   function handleDecrement(id: string): void {
     // TODO
+    decrement(id)
   }
 
   const cartTotal = useMemo(() => {
     // TODO RETURN THE SUM OF THE QUANTITY OF THE PRODUCTS IN THE CART
+    const cartTotalProduct = products.reduce(
+      (accumulator, product) => {
+        if(product.quantity){
+          return accumulator + product.quantity * product.price
+        }
+        return accumulator
+      }, 0)
 
-    return formatValue(0);
+    return formatValue(cartTotalProduct);
   }, [products]);
 
   const totalItensInCart = useMemo(() => {
     // TODO RETURN THE SUM OF THE QUANTITY OF THE PRODUCTS IN THE CART
+    console.log(products)
 
-    return 0;
+    const totalItensInCartProduct = products.reduce(
+      (accumulator, product) => {
+        if(product.quantity){
+          return accumulator + product.quantity
+        }
+        return accumulator
+      }, 0)
+
+    return totalItensInCartProduct
   }, [products]);
 
   return (
@@ -68,7 +86,7 @@ const Cart: React.FC = () => {
           ListFooterComponentStyle={{
             height: 80,
           }}
-          renderItem={({ item }: { item: Product }) => (
+          renderItem={({ item }) => (
             <Product>
               <ProductImage source={{ uri: item.image_url }} />
               <ProductTitleContainer>
@@ -82,7 +100,7 @@ const Cart: React.FC = () => {
                     <ProductQuantity>{`${item.quantity}x`}</ProductQuantity>
 
                     <ProductPrice>
-                      {formatValue(item.price * item.quantity)}
+                      {formatValue(item.price)}
                     </ProductPrice>
                   </TotalContainer>
                 </ProductPriceContainer>
